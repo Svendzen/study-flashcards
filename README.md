@@ -1,2 +1,1 @@
-# react-flashcards
-Created with CodeSandbox
+# Study Flashcard
