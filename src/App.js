@@ -61,13 +61,19 @@ function FlashCards() {
       {questions.map((question) => (
         <div
           key={question.id}
+          className="card-wrapper"
           onClick={() => handleClick(question.id)}
-          className={question.id === selectedId ? "selected" : ""}
         >
-          <p>
-            {/*If a flashcard is selected(clicked on): show answer instead of question*/}
-            {question.id === selectedId ? question.answer : question.question}
-          </p>
+          <div
+            className={`card ${question.id === selectedId ? "selected" : ""}`}
+          >
+            <div className="card-face front">
+              <p>{question.question}</p>
+            </div>
+            <div className="card-face back">
+              <p>{question.answer}</p>
+            </div>
+          </div>
         </div>
       ))}
     </div>
