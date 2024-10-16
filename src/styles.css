@@ -4,13 +4,54 @@
 
 body {
   font-family: sans-serif;
-  padding: 20px;
+  margin: 0;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Navbar styles */
+.navbar {
+  background-color: #333;
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-button {
+  background-color: #e03131;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: #c92a2a;
 }
 
 .flashcards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+  padding: 20px;
+  flex-grow: 1;
 }
 
 .card-wrapper {
@@ -62,4 +103,101 @@ body {
   color: #fff;
   font-weight: bold;
   border: 1px solid #e03131;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 7px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.modal h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.modal label {
+  display: block;
+  margin-top: 10px;
+  color: #333;
+}
+
+.modal textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  margin-top: 5px;
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.modal-button {
+  background-color: #e03131;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.modal-button:hover,
+.modal-button:focus {
+  background-color: #c92a2a;
+  outline: none;
+}
+
+.cancel-button {
+  background-color: #868e96;
+}
+
+.cancel-button:hover,
+.cancel-button:focus {
+  background-color: #495057;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .flashcards {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .card-face p {
+    font-size: 16px;
+  }
 }

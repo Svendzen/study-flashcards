@@ -1,15 +1,7 @@
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
 import "./styles.css";
 
-export default function App() {
-  return (
-    <div className="App">
-      <FlashCardsList />
-    </div>
-  );
-}
-
-const questions = [
+const initialQuestions = [
   {
     id: 1,
     question: "What are the three primary research approaches?",
@@ -49,8 +41,114 @@ const questions = [
   },
 ];
 
+// Create a context for flashcards
+const FlashcardsContext = createContext();
+
+function useFlashcardsContext() {
+  return useContext(FlashcardsContext);
+}
+
+export default function App() {
+  // Move flashcards state to App component
+  const [flashcards, setFlashcards] = useState(initialQuestions);
+
+  function addFlashcard({ question, answer }) {
+    const newFlashcard = {
+      id: flashcards.length + 1,
+      question,
+      answer,
+    };
+    setFlashcards([...flashcards, newFlashcard]);
+  }
+
+  return (
+    <FlashcardsContext.Provider value={{ addFlashcard }}>
+      <div className="App">
+        <Navbar />
+        <FlashCardsList flashcards={flashcards} />
+      </div>
+    </FlashcardsContext.Provider>
+  );
+}
+
+// Navbar component
+function Navbar() {
+  const [showForm, setShowForm] = useState(false);
+
+  return (
+    <nav className="navbar">
+      <h1 className="app-title">Study Flashcards</h1>
+      <div className="nav-links">
+        <button
+          className="nav-button"
+          onClick={() => setShowForm(true)}
+          aria-label="Add a new flashcard"
+        >
+          Add Flashcard
+        </button>
+      </div>
+      {showForm && <AddFlashcardForm onClose={() => setShowForm(false)} />}
+    </nav>
+  );
+}
+
+// AddFlashcardForm component
+function AddFlashcardForm({ onClose }) {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  // Access the addFlashcard function from context
+  const { addFlashcard } = useFlashcardsContext();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (question.trim() && answer.trim()) {
+      addFlashcard({ question, answer });
+      setQuestion("");
+      setAnswer("");
+      onClose();
+    }
+  }
+
+  return (
+    <div className="modal-overlay" role="dialog" aria-modal="true">
+      <div className="modal">
+        <h2>Add New Flashcard</h2>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="question">Question:</label>
+          <textarea
+            id="question"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            required
+          />
+          <label htmlFor="answer">Answer:</label>
+          <textarea
+            id="answer"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            required
+          />
+          <div className="modal-buttons">
+            <button type="submit" className="modal-button">
+              Add
+            </button>
+            <button
+              type="button"
+              className="modal-button cancel-button"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // FlashCardsList component
-function FlashCardsList() {
+function FlashCardsList({ flashcards }) {
   const [selectedId, setSelectedId] = useState(null);
 
   function handleClick(id) {
@@ -59,12 +157,12 @@ function FlashCardsList() {
 
   return (
     <div className="flashcards">
-      {questions.map((question) => (
+      {flashcards.map((flashcard) => (
         <FlashCard
-          key={question.id}
-          question={question}
-          isSelected={question.id === selectedId}
-          onClick={() => handleClick(question.id)}
+          key={flashcard.id}
+          question={flashcard}
+          isSelected={flashcard.id === selectedId}
+          onClick={() => handleClick(flashcard.id)}
         />
       ))}
     </div>
@@ -74,7 +172,17 @@ function FlashCardsList() {
 // FlashCard component
 function FlashCard({ question, isSelected, onClick }) {
   return (
-    <div className="card-wrapper" onClick={onClick}>
+    <div
+      className="card-wrapper"
+      onClick={onClick}
+      tabIndex="0"
+      onKeyPress={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClick();
+        }
+      }}
+      aria-label={`Flashcard ${question.id}`}
+    >
       <div className={`card ${isSelected ? "selected" : ""}`}>
         <div className="card-face">
           <p>{question.question}</p>
