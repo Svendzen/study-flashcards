@@ -4,7 +4,7 @@ import "./styles.css";
 export default function App() {
   return (
     <div className="App">
-      <FlashCards />
+      <FlashCardsList />
     </div>
   );
 }
@@ -49,7 +49,8 @@ const questions = [
   },
 ];
 
-function FlashCards() {
+// FlashCardsList component
+function FlashCardsList() {
   const [selectedId, setSelectedId] = useState(null);
 
   function handleClick(id) {
@@ -59,23 +60,29 @@ function FlashCards() {
   return (
     <div className="flashcards">
       {questions.map((question) => (
-        <div
+        <FlashCard
           key={question.id}
-          className="card-wrapper"
+          question={question}
+          isSelected={question.id === selectedId}
           onClick={() => handleClick(question.id)}
-        >
-          <div
-            className={`card ${question.id === selectedId ? "selected" : ""}`}
-          >
-            <div className="card-face front">
-              <p>{question.question}</p>
-            </div>
-            <div className="card-face back">
-              <p>{question.answer}</p>
-            </div>
-          </div>
-        </div>
+        />
       ))}
+    </div>
+  );
+}
+
+// FlashCard component
+function FlashCard({ question, isSelected, onClick }) {
+  return (
+    <div className="card-wrapper" onClick={onClick}>
+      <div className={`card ${isSelected ? "selected" : ""}`}>
+        <div className="card-face">
+          <p>{question.question}</p>
+        </div>
+        <div className="card-face back">
+          <p>{question.answer}</p>
+        </div>
+      </div>
     </div>
   );
 }
